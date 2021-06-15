@@ -4,6 +4,10 @@
 const path = require('path');
 const notesData = require('../db/db.json');
 const fs = require('fs');
+const { v4: uuidv4 } = require ('uuid');
+
+
+
 
 // ROUTING
 
@@ -11,9 +15,16 @@ module.exports = (app) => {
 
   app.get('/api/notes', (req, res) => res.json(notesData));
 
+  app.get("/api/notes/:id", (req, res) => {
+    res.json(notesData[Number(req.params.id)])})
+
   app.post('/api/notes', (req, res) => {
+    
     notesData.push(req.body);
-    console.log('req.body: ', req.body)
+    console.log(req.body);
+    req.body.id = uuidv4();
+    console.log('id: ', req.body.id)
+     
 
     fs.writeFile(path.join(__dirname, '../db/db.json'), JSON.stringify(notesData), function(err){
       if (err) throw (err);
